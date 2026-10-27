@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaPure & HydroFlow | Pure Hydration Redefined</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <!-- Google Fonts: Inter & Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary-ocean: #006699;
+      --vibrant-cyan: #00d2ff;
+      --deep-navy: #0a192f;
+      --soft-ice: #f0f8ff;
+      --slate-grey: #64748b;
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.3);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    h1, h2, h3, h4, .brand-font {
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Gradient Text */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary-ocean), var(--vibrant-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, #0052d4, #4364f7, #6fb1fc);
+    }
+
+    .bg-deep-navy {
+      background-color: var(--deep-navy);
+    }
+
+    /* Dynamic Canvas Floating Background */
+    #particle-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Glassmorphic Navbar */
+    .navbar-glass {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.3s ease;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: #334155;
+      padding: 0.5rem 1rem !important;
+      transition: color 0.25s ease;
+      cursor: pointer;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary-ocean) !important;
+      font-weight: 600;
+    }
+
+    /* Page Navigation Views */
+    .spa-section {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .spa-section.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Hero Floating Bottle Area */
+    .hero-container {
+      position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      background: radial-gradient(circle at 70% 30%, #e0f2fe 0%, #f8fafc 70%);
+      overflow: hidden;
+    }
+
+    .bottle-stage {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 480px;
+    }
+
+    .floating-bottle-wrapper {
+      position: relative;
+      z-index: 2;
+      animation: float 5s ease-in-out infinite;
+      filter: drop-shadow(0 25px 35px rgba(0, 102, 153, 0.25));
+      transition: transform 0.3s ease, filter 0.5s ease;
+    }
+
+    .bottle-svg {
+      width: 240px;
+      height: 440px;
+      transition: all 0.5s ease;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(1.5deg); }
+    }
+
+    .bottle-shadow {
+      position: absolute;
+      bottom: 20px;
+      width: 180px;
+      height: 20px;
+      background: rgba(15, 23, 42, 0.15);
+      border-radius: 50%;
+      filter: blur(8px);
+      animation: shadowScale 5s ease-in-out infinite;
+    }
+
+    @keyframes shadowScale {
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(0.75); opacity: 0.3; }
+    }
+
+    /* Interactive Color Chips */
+    .color-chip {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-block;
+      margin-right: 8px;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .color-chip:hover, .color-chip.active {
+      transform: scale(1.2);
+      box-shadow: 0 0 0 3px var(--vibrant-cyan);
+    }
+
+    /* Product Cards */
+    .product-card {
+      border: none;
+      border-radius: 18px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 102, 153, 0.12);
+    }
+
+    .product-img-box {
+      background: radial-gradient(circle, #f1f5f9, #e2e8f0);
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .badge-tag {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Sustainability Slider styling */
+    .range-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: #cbd5e1;
+      outline: none;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary-ocean);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 102, 153, 0.5);
+      transition: transform 0.15s ease;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    /* Tech Feature Hotspot Cards */
+    .tech-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      background: #ffffff;
+      transition: all 0.3s ease;
+    }
+
+    .tech-card:hover {
+      border-color: var(--vibrant-cyan);
+      background: linear-gradient(180deg, #ffffff, #f0f9ff);
+      transform: translateY(-4px);
+    }
+
+    .icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Animated Wave */
+    .wave-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      overflow: hidden;
+      line-height: 0;
+      background: transparent;
+    }
+
+    /* Floating Toast Styling */
+    .toast-container {
+      z-index: 1090;
+    }
+
+    /* Cart Offcanvas */
+    .cart-item-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVIGATION BAR -->
+  <nav class="navbar navbar-expand-lg sticky-top navbar-glass py-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4 text-dark" href="#" onclick="switchTab('home')">
+        <i class="fa-solid fa-droplet text-primary fs-3"></i>
+        <span>Aqua<span class="text-gradient">Pure</span></span>
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1">
+          <li class="nav-item"><a class="nav-link active" id="nav-home" onclick="switchTab('home')">Home</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-products" onclick="switchTab('products')">Models & Products</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-tech" onclick="switchTab('tech')">Tech & Specs</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-impact" onclick="switchTab('impact')">Sustainability</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-reviews" onclick="switchTab('reviews')">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" id="nav-contact" onclick="switchTab('contact')">Contact</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-dark position-relative border-0 rounded-circle p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer">
+            <i class="fa-solid fa-bag-shopping fs-5"></i>
+            <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">0</span>
+          </button>
+          <button class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" onclick="switchTab('products')">
+            Shop Now <i class="fa-solid fa-arrow-right ms-1"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 1: HOME / HERO SECTION -->
+  <!-- ========================================================================= -->
+  <section id="page-home" class="spa-section active">
+    <div class="hero-container">
+      <canvas id="particle-canvas"></canvas>
+      
+      <div class="container relative-z2 py-5">
+        <div class="row align-items-center gy-5">
+          <!-- Hero Text -->
+          <div class="col-lg-6 animate__animated animate__fadeInLeft">
+            <span class="badge bg-info-subtle text-primary border border-info rounded-pill px-3 py-2 mb-3 font-semibold">
+              <i class="fa-solid fa-sparkles me-1"></i> Next-Gen Thermal Technology
+            </span>
+            <h1 class="display-3 fw-bold mb-3 lh-sm">
+              Pure Hydration, <br><span class="text-gradient">Redefined for Life.</span>
+            </h1>
+            <p class="lead text-muted mb-4 pe-lg-4">
+              Engineered with triple-vacuum insulation, smart OLED temperature displays, and medical-grade stainless steel. Engineered for peak performance and built for zero plastic waste.
+            </p>
+            
+            <div class="d-flex flex-wrap gap-3 align-items-center mb-5">
+              <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 shadow" onclick="switchTab('products')">
+                Explore Collection <i class="fa-solid fa-arrow-right ms-2"></i>
+              </button>
+              <button class="btn btn-outline-secondary btn-lg rounded-pill px-4 py-3" onclick="switchTab('tech')">
+                <i class="fa-solid fa-play me-2 text-primary"></i> See How It Works
+              </button>
+            </div>
+
+            <!-- Color Switcher Widget -->
+            <div class="p-3 bg-white rounded-4 shadow-sm border d-inline-block">
+              <small class="text-uppercase fw-bold text-muted d-block mb-2 style-sm">Dynamic Customizer Finish</small>
+              <div class="d-flex align-items-center gap-2">
+                <span class="color-chip active" style="background-color: #006699;" onclick="changeHeroColor('#006699', 'Ocean Azure')" title="Ocean Azure"></span>
+                <span class="color-chip" style="background-color: #0f172a;" onclick="changeHeroColor('#0f172a', 'Matte Obsidian')" title="Matte Obsidian"></span>
+                <span class="color-chip" style="background-color: #10b981;" onclick="changeHeroColor('#10b981', 'Emerald Alpine')" title="Emerald Alpine"></span>
+                <span class="color-chip" style="background-color: #f43f5e;" onclick="changeHeroColor('#f43f5e', 'Coral Sunset')" title="Coral Sunset"></span>
+                <span class="color-chip" style="background-color: #e2e8f0;" onclick="changeHeroColor('#94a3b8', 'Brushed Glacier')" title="Brushed Glacier"></span>
+                <span id="color-name-display" class="ms-2 fw-semibold text-dark small">Ocean Azure</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero 3D Interactive Vector Bottle Visual -->
+          <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
+            <div class="bottle-stage">
+              <div class="floating-bottle-wrapper" id="hero-bottle-wrapper">
+                <!-- SVG Vector Bottle with dynamic color gradient target -->
+                <svg class="bottle-svg" viewBox="0 0 100 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="bottleBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" id="grad-stop1" stop-color="#006699" />
+                      <stop offset="50%" id="grad-stop2" stop-color="#0088cc" />
+                      <stop offset="100%" id="grad-stop3" stop-color="#004477" />
+                    </linearGradient>
+                    <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#334155" />
+                      <stop offset="100%" stop-color="#0f172a" />
+                    </linearGradient>
+                  </defs>
+
+                  <!-- Cap Ring & Loop -->
+                  <rect x="38" y="10" width="24" height="8" rx="2" fill="url(#capGrad)" />
+                  <path d="M 42 10 Q 50 0 58 10" stroke="#334155" stroke-width="3" fill="none" />
+                  
+                  <!-- OLED Temp Ring Display -->
+                  <rect x="36" y="18" width="28" height="14" rx="3" fill="#0f172a" />
+                  <text x="50" y="28" fill="#00d2ff" font-size="6" font-weight="bold" text-anchor="middle">04°C</text>
+                  
+                  <!-- Bottle Neck -->
+                  <path d="M 38 32 L 35 55 L 65 55 L 62 32 Z" fill="url(#bottleBodyGrad)" />
+                  
+                  <!-- Bottle Main Body -->
+                  <rect x="25" y="55" width="50" height="150" rx="10" fill="url(#bottleBodyGrad)" />
+                  
+                  <!-- Metallic Highlight Reflection -->
+                  <path d="M 30 60 Q 32 120 30 195" stroke="rgba(255,255,255,0.35)" stroke-width="4" stroke-linecap="round" />
+                  
+                  <!-- AquaPure Logo Mark on Bottle -->
+                  <circle cx="50" cy="115" r="10" fill="rgba(255,255,255,0.15)" />
+                  <path d="M 50 110 C 50 110 44 118 50 122 C 56 118 50 110 50 110 Z" fill="#ffffff" />
+                  
+                  <!-- Grip Textures -->
+                  <line x1="28" y1="185" x2="72" y2="185" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" />
+                  <line x1="28" y1="189" x2="72" y2="189" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" />
+                </svg>
+              </div>
+              <div class="bottle-shadow"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animated Live Counter Stats -->
+        <div class="row g-4 mt-5">
+          <div class="col-md-3 col-6">
+            <div class="stat-card">
+              <h3 class="display-6 fw-bold text-primary mb-0"><span class="counter" data-target="24">24</span>h</h3>
+              <p class="text-muted small fw-semibold mb-0">Cold Insulation</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card">
+              <h3 class="display-6 fw-bold text-primary mb-0"><span class="counter" data-target="12">12</span>h</h3>
+              <p class="text-muted small fw-semibold mb-0">Hot Thermal Retention</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card">
+              <h3 class="display-6 fw-bold text-primary mb-0"><span class="counter" data-target="100">100</span>%</h3>
+              <p class="text-muted small fw-semibold mb-0">BPA & Toxin Free</p>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-card">
+              <h3 class="display-6 fw-bold text-primary mb-0"><span class="counter" data-target="85">85</span>k+</h3>
+              <p class="text-muted small fw-semibold mb-0">Single-use Plastic Saved</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 2: PRODUCTS / MODELS SHOWCASE -->
+  <!-- ========================================================================= -->
+  <section id="page-products" class="spa-section py-5">
+    <div class="container py-4">
+      <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="text-primary fw-bold text-uppercase tracking-wider">Engineered Collection</span>
+        <h2 class="display-5 fw-bold mt-1">Find Your Perfect Flow</h2>
+        <p class="text-muted">Explore our award-winning range of insulated bottles designed for sports, office, and rugged adventures.</p>
+
+        <!-- Filter Category Buttons -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+          <button class="btn btn-primary rounded-pill px-4 filter-btn active" onclick="filterProducts('all', this)">All Models</button>
+          <button class="btn btn-outline-secondary rounded-pill px-4 filter-btn" onclick="filterProducts('smart', this)">Smart OLED</button>
+          <button class="btn btn-outline-secondary rounded-pill px-4 filter-btn" onclick="filterProducts('sport', this)">Sport Series</button>
+          <button class="btn btn-outline-secondary rounded-pill px-4 filter-btn" onclick="filterProducts('compact', this)">Compact / Kids</button>
+        </div>
+      </div>
+
+      <!-- Products Cards Grid -->
+      <div class="row g-4" id="products-grid">
+        <!-- Products populated via JavaScript dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 3: TECH & FEATURES -->
+  <!-- ========================================================================= -->
+  <section id="page-tech" class="spa-section py-5">
+    <div class="container py-4">
+      <div class="row align-items-center gy-5 mb-5">
+        <div class="col-lg-6">
+          <span class="text-primary fw-bold text-uppercase">Aerospace Grade Engineering</span>
+          <h2 class="display-5 fw-bold my-3">Crafted With Precision In Every Detail</h2>
+          <p class="text-muted lead">AquaPure combines triple-wall vacuum insulation with pro-grade 18/8 stainless steel to guarantee your beverage stays ice cold or piping hot all day long.</p>
+          
+          <div class="d-flex align-items-start gap-3 my-4">
+            <div class="icon-box bg-primary-subtle text-primary">
+              <i class="fa-solid fa-temperature-arrow-down"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">TempShield™ Triple Insulation</h5>
+              <p class="text-muted mb-0">Eliminates condensation and preserves exact liquid temperatures for up to 24 hours.</p>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start gap-3 my-4">
+            <div class="icon-box bg-info-subtle text-info">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Smart Touch OLED Cap</h5>
+              <p class="text-muted mb-0">Real-time liquid temperature readout with color LED hydration reminder alerts.</p>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-start gap-3 my-4">
+            <div class="icon-box bg-success-subtle text-success">
+              <i class="fa-solid fa-filter"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Integrated Micro-Filter Straw</h5>
+              <p class="text-muted mb-0">Filters 99.9% of sediments and micro-plastics as you sip.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 text-center">
+          <div class="p-5 bg-gradient-primary rounded-5 text-white position-relative overflow-hidden shadow-lg">
+            <i class="fa-solid fa-shield-halved position-absolute top-50 start-50 translate-middle text-white opacity-10" style="font-size: 20rem;"></i>
+            <h3 class="fw-bold mb-4">Anatomy of AquaPure</h3>
+            <div class="tech-card text-dark text-start mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fa-solid fa-layer-group text-primary me-2"></i> Outer Tough-Powder Coat</span>
+                <span class="badge bg-light text-dark">Non-Slip</span>
+              </div>
+            </div>
+            <div class="tech-card text-dark text-start mb-3">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fa-solid fa-snowflake text-info me-2"></i> Vacuum Chamber Insulation</span>
+                <span class="badge bg-light text-dark">0% Heat Transfer</span>
+              </div>
+            </div>
+            <div class="tech-card text-dark text-start">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fa-solid fa-gem text-warning me-2"></i> 18/8 Pro Stainless Steel</span>
+                <span class="badge bg-light text-dark">Zero Metallic Taste</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 4: SUSTAINABILITY & IMPACT CALCULATOR -->
+  <!-- ========================================================================= -->
+  <section id="page-impact" class="spa-section py-5">
+    <div class="container py-4">
+      <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="text-success fw-bold text-uppercase"><i class="fa-solid fa-leaf me-1"></i> Eco-Impact Calculator</span>
+        <h2 class="display-5 fw-bold mt-1">See Your Environmental Power</h2>
+        <p class="text-muted">Calculate how switching to AquaPure reduces single-use plastic pollution and saves you real money.</p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
+            <div class="row align-items-center gy-4">
+              <div class="col-md-6">
+                <label for="plasticSlider" class="form-label fw-bold mb-3">
+                  Plastic water bottles you purchase per week: 
+                  <span id="sliderValue" class="text-primary fs-4 ms-2">12</span>
+                </label>
+                <input type="range" class="range-slider" id="plasticSlider" min="1" max="50" value="12" oninput="calculateEcoImpact(this.value)">
+                
+                <div class="d-flex justify-content-between text-muted small mt-2">
+                  <span>1 bottle/wk</span>
+                  <span>25 bottles/wk</span>
+                  <span>50 bottles/wk</span>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="row g-3">
+                  <div class="col-6">
+                    <div class="p-3 bg-success-subtle rounded-3 text-center">
+                      <h3 class="fw-bold text-success mb-1" id="statPlasticSaved">624</h3>
+                      <small class="text-muted fw-semibold">Plastic Bottles Saved / Yr</small>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-3 bg-primary-subtle rounded-3 text-center">
+                      <h3 class="fw-bold text-primary mb-1" id="statMoneySaved">$936</h3>
+                      <small class="text-muted fw-semibold">Money Saved / Yr</small>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="p-3 bg-info-subtle rounded-3 text-center">
+                      <h4 class="fw-bold text-info mb-1" id="statCo2Saved">51.2 kg</h4>
+                      <small class="text-muted fw-semibold">CO2 Emissions Prevented Annually</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 5: REVIEWS & REPUTATION -->
+  <!-- ========================================================================= -->
+  <section id="page-reviews" class="spa-section py-5">
+    <div class="container py-4">
+      <div class="text-center max-w-2xl mx-auto mb-5">
+        <span class="text-primary fw-bold text-uppercase">Community Feedback</span>
+        <h2 class="display-5 fw-bold mt-1">Loved by 50,000+ Hydrators</h2>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded-4 shadow-sm border h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="text-warning mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-secondary italic">"The OLED temp cap is a game-changer! Kept my water ice-cold during an 8-hour hike through Death Valley."</p>
+            </div>
+            <div class="d-flex align-items-center gap-3 mt-4">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" class="rounded-circle" width="48" height="48" alt="User">
+              <div>
+                <h6 class="fw-bold mb-0">Sarah Jenkins</h6>
+                <small class="text-muted">Verified Adventurer</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded-4 shadow-sm border h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="text-warning mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-secondary italic">"Super sleek build quality. Replaced all disposable bottles in our office with the AquaPure Executive."</p>
+            </div>
+            <div class="d-flex align-items-center gap-3 mt-4">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" class="rounded-circle" width="48" height="48" alt="User">
+              <div>
+                <h6 class="fw-bold mb-0">David Chen</h6>
+                <small class="text-muted">Architect</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="bg-white p-4 rounded-4 shadow-sm border h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="text-warning mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-secondary italic">"100% leakproof! Fits in my bike bottle cage seamlessly and keeps coffee hot all morning."</p>
+            </div>
+            <div class="d-flex align-items-center gap-3 mt-4">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" class="rounded-circle" width="48" height="48" alt="User">
+              <div>
+                <h6 class="fw-bold mb-0">Elena Rostova</h6>
+                <small class="text-muted">Triathlete</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- PAGE 6: CONTACT & FAQ -->
+  <!-- ========================================================================= -->
+  <section id="page-contact" class="spa-section py-5">
+    <div class="container py-4">
+      <div class="row gy-5">
+        <!-- FAQ Accordion -->
+        <div class="col-lg-6">
+          <h3 class="fw-bold mb-4">Frequently Asked Questions</h3>
+          <div class="accordion accordion-flush bg-white rounded-4 shadow-sm border p-3" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                  How do I charge the OLED Smart Cap?
+                </button>
+              </h2>
+              <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  The OLED cap is equipped with a magnetic USB fast charger. A single 1-hour charge lasts up to 30 days of continuous temperature tracking!
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                  Are AquaPure bottles dishwasher safe?
+                </button>
+              </h2>
+              <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  The stainless steel bottle body is 100% dishwasher safe. We recommend hand-washing the smart display cap to protect the electronic seals.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                  What is your warranty policy?
+                </button>
+              </h2>
+              <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted">
+                  Every AquaPure bottle comes with a Limited Lifetime Warranty covering manufacturing defects and vacuum insulation failures.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-lg-6">
+          <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
+            <h3 class="fw-bold mb-3">Get in Touch</h3>
+            <p class="text-muted mb-4">Have questions regarding wholesale orders or custom engravings? Drop us a message.</p>
+
+            <form id="contactForm" onsubmit="handleContactSubmit(event)">
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Full Name</label>
+                <input type="text" class="form-control form-control-lg rounded-3" placeholder="Jane Doe" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <input type="email" class="form-control form-control-lg rounded-3" placeholder="jane@example.com" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Message</label>
+                <textarea class="form-control form-control-lg rounded-3" rows="4" placeholder="How can we help you?" required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-semibold">
+                Send Message <i class="fa-solid fa-paper-plane ms-2"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- SHOPPING CART OFFCANVAS DRAWER -->
+  <!-- ========================================================================= -->
+  <div class="offcanvas offcanvas-end rounded-start-4" tabindex="-1" id="cartDrawer">
+    <div class="offcanvas-header border-bottom">
+      <h5 class="offcanvas-title fw-bold"><i class="fa-solid fa-bag-shopping text-primary me-2"></i> Your Shopping Bag</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <div class="offcanvas-body d-flex flex-column" id="cart-drawer-body">
+      <!-- Dynamic cart contents rendered here -->
+    </div>
+
+    <div class="offcanvas-footer p-3 border-top bg-light">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Subtotal:</span>
+        <span class="fs-4 fw-bold text-dark" id="cart-total-price">$0.00</span>
+      </div>
+      <button class="btn btn-primary w-100 btn-lg rounded-pill fw-semibold" id="checkoutBtn" onclick="triggerCheckout()" disabled>
+        Proceed to Checkout <i class="fa-solid fa-credit-card ms-2"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- QUICK VIEW PRODUCT MODAL -->
+  <div class="modal fade" id="quickViewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 overflow-hidden">
+        <div class="modal-body p-0" id="quickViewModalContent">
+          <!-- Dynamic Quick View Injection -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT SUCCESS MODAL -->
+  <div class="modal fade" id="checkoutSuccessModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 text-center p-4">
+        <div class="modal-body">
+          <div class="icon-box bg-success-subtle text-success mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2.5rem;">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h3 class="fw-bold">Order Confirmed!</h3>
+          <p class="text-muted">Thank you for choosing AquaPure. Your order #AP-89230 is being prepared for fast eco-friendly dispatch.</p>
+          <button type="button" class="btn btn-primary rounded-pill px-5 mt-3" data-bs-dismiss="modal">Continue Hydrating</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-white bg-dark border-0 rounded-3" role="alert">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2" id="toastMessage">
+          <i class="fa-solid fa-circle-check text-success"></i> Item added to your cart!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-deep-navy text-white pt-5 pb-4 mt-5">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+          <a class="d-flex align-items-center gap-2 fw-bold fs-4 text-white text-decoration-none mb-3" href="#">
+            <i class="fa-solid fa-droplet text-info fs-3"></i>
+            <span>AquaPure</span>
+          </a>
+          <p class="text-slate-grey small">Redefining hydration with eco-smart thermal insulation and zero-plastic footprint technology.</p>
+        </div>
+        <div class="col-lg-2 col-6">
+          <h6 class="fw-bold mb-3 text-uppercase text-info small">Quick Links</h6>
+          <ul class="list-unstyled text-slate-grey small">
+            <li class="mb-2"><a href="#" onclick="switchTab('home')" class="text-reset text-decoration-none">Home</a></li>
+            <li class="mb-2"><a href="#" onclick="switchTab('products')" class="text-reset text-decoration-none">Products</a></li>
+            <li class="mb-2"><a href="#" onclick="switchTab('tech')" class="text-reset text-decoration-none">Tech Specs</a></li>
+            <li class="mb-2"><a href="#" onclick="switchTab('impact')" class="text-reset text-decoration-none">Impact</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-6">
+          <h6 class="fw-bold mb-3 text-uppercase text-info small">Support</h6>
+          <ul class="list-unstyled text-slate-grey small">
+            <li class="mb-2"><a href="#" onclick="switchTab('contact')" class="text-reset text-decoration-none">Contact Us</a></li>
+            <li class="mb-2"><a href="#" onclick="switchTab('contact')" class="text-reset text-decoration-none">FAQs</a></li>
+            <li class="mb-2"><a href="#" class="text-reset text-decoration-none">Shipping & Return</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h6 class="fw-bold mb-3 text-uppercase text-info small">Join Hydration Club</h6>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control bg-dark border-secondary text-white" placeholder="Enter email address">
+            <button class="btn btn-primary" type="button"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+      <hr class="border-secondary">
+      <div class="d-flex justify-content-between align-items-center flex-wrap small text-slate-grey">
+        <p class="mb-0">&copy; 2026 AquaPure HydroFlow Inc. All rights reserved.</p>
+        <div class="d-flex gap-3 fs-5">
+          <a href="#" class="text-reset"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="text-reset"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#" class="text-reset"><i class="fa-brands fa-facebook"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Application Logic JS -->
+  <script>
+    // --- PRODUCT DATA STORE ---
+    const productsData = [
+      {
+        id: 'p1',
+        name: 'AquaLuxe Smart OLED Temp 1L',
+        category: 'smart',
+        price: 59.99,
+        rating: 4.9,
+        reviewsCount: 128,
+        badge: 'Bestseller',
+        badgeBg: 'bg-primary text-white',
+        color: '#006699',
+        description: 'Features real-time OLED touch screen temperature indicator, hydration intake reminders, and 24h cold insulation.',
+        specs: ['1000ml Capacity', 'Touch OLED Cap', '18/8 Stainless Steel', 'IPX7 Water Resistant']
+      },
+      {
+        id: 'p2',
+        name: 'HydroFlow Sport 750ml',
+        category: 'sport',
+        price: 39.99,
+        rating: 4.8,
+        reviewsCount: 94,
+        badge: 'Sport Edition',
+        badgeBg: 'bg-info text-dark',
+        color: '#10b981',
+        description: 'Ergonomic non-slip grip silicone sleeve with easy one-click spring flip straw cap.',
+        specs: ['750ml Capacity', 'Micro-Filter Straw', 'BPA Free Lid', 'Sweat Proof']
+      },
+      {
+        id: 'p3',
+        name: 'AquaPure Executive 500ml',
+        category: 'smart',
+        price: 45.00,
+        rating: 4.7,
+        reviewsCount: 65,
+        badge: 'Minimalist',
+        badgeBg: 'bg-dark text-white',
+        color: '#0f172a',
+        description: 'Ultra-sleek matte obsidian finish designed to fit seamlessly into executive briefcases and car cup holders.',
+        specs: ['500ml Capacity', 'Double Wall Vacuum', 'Leakproof Lock', 'Lightweight']
+      },
+      {
+        id: 'p4',
+        name: 'HydroKids Eco 350ml',
+        category: 'compact',
+        price: 29.99,
+        rating: 4.9,
+        reviewsCount: 210,
+        badge: 'Kid Safe',
+        badgeBg: 'bg-warning text-dark',
+        color: '#f43f5e',
+        description: 'Ultra-durable, drop-resistant design with built-in soft silicone straw spout for easy sipping.',
+        specs: ['350ml Capacity', 'Drop-Shield Base', 'Dishwasher Safe', '100% Non-Toxic']
+      }
+    ];
+
+    // --- SHOPPING CART STATE ---
+    let cart = [];
+
+    // --- NAVIGATION SPA SWITCHER ---
+    function switchTab(sectionId) {
+      // Hide all SPA sections
+      document.querySelectorAll('.spa-section').forEach(sec => {
+        sec.classList.remove('active');
+      });
+
+      // Deactivate navbar links
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+
+      // Show selected section
+      const targetSection = document.getElementById(`page-${sectionId}`);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+
+      // Highlight corresponding link
+      const targetNav = document.getElementById(`nav-${sectionId}`);
+      if (targetNav) {
+        targetNav.classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- HERO BOTTLE COLOR CUSTOMIZER ---
+    function changeHeroColor(colorHex, colorName) {
+      document.getElementById('grad-stop1').setAttribute('stop-color', colorHex);
+      document.getElementById('grad-stop2').setAttribute('stop-color', adjustColorBrightness(colorHex, 30));
+      document.getElementById('grad-stop3').setAttribute('stop-color', adjustColorBrightness(colorHex, -30));
+      document.getElementById('color-name-display').innerText = colorName;
+
+      // Pulse effect on bottle
+      const bottle = document.getElementById('hero-bottle-wrapper');
+      bottle.style.transform = 'scale(1.08) rotate(3deg)';
+      setTimeout(() => {
+        bottle.style.transform = '';
+      }, 300);
+    }
+
+    // Helper function for color shade calculations
+    function adjustColorBrightness(hex, percent) {
+      var num = parseInt(hex.replace('#',''), 16),
+      amt = Math.round(2.55 * percent),
+      R = (num >> 16) + amt,
+      G = (num >> 8 & 0x00FF) + amt,
+      B = (num & 0x0000FF) + amt;
+      return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+    }
+
+    // --- RENDER PRODUCTS GRID ---
+    function renderProducts(filter = 'all') {
+      const container = document.getElementById('products-grid');
+      container.innerHTML = '';
+
+      const filtered = filter === 'all' 
+        ? productsData 
+        : productsData.filter(p => p.category === filter);
+
+      filtered.forEach(p => {
+        const cardHtml = `
+          <div class="col-md-6 col-lg-3 animate__animated animate__fadeInUp">
+            <div class="product-card h-100 d-flex flex-column justify-content-between">
+              <div>
+                <div class="product-img-box">
+                  <span class="badge-tag ${p.badgeBg}">${p.badge}</span>
+                  <svg width="100" height="180" viewBox="0 0 100 200" fill="none">
+                    <rect x="35" y="10" width="30" height="12" rx="3" fill="#334155"/>
+                    <path d="M 30 22 L 25 45 L 75 45 L 70 22 Z" fill="${p.color}"/>
+                    <rect x="22" y="45" width="56" height="140" rx="12" fill="${p.color}"/>
+                    <path d="M 28 50 Q 30 110 28 175" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
+                  </svg>
+                </div>
+                <div class="p-4">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="text-warning small">
+                      <i class="fa-solid fa-star"></i> <span class="fw-bold text-dark">${p.rating}</span> (${p.reviewsCount})
+                    </div>
+                    <span class="fw-bold fs-5 text-primary">$${p.price.toFixed(2)}</span>
+                  </div>
+                  <h5 class="fw-bold mb-2">${p.name}</h5>
+                  <p class="text-muted small mb-3">${p.description}</p>
+                </div>
+              </div>
+              <div class="px-4 pb-4 pt-0 d-flex gap-2">
+                <button class="btn btn-outline-primary rounded-pill flex-grow-1" onclick="openQuickView('${p.id}')">
+                  <i class="fa-solid fa-eye me-1"></i> Quick View
+                </button>
+                <button class="btn btn-primary rounded-circle" onclick="addToCart('${p.id}')" style="width: 42px; height: 42px;">
+                  <i class="fa-solid fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += cardHtml;
+      });
+    }
+
+    function filterProducts(category, btnElement) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('btn-primary', 'active');
+        b.classList.add('btn-outline-secondary');
+      });
+      btnElement.classList.remove('btn-outline-secondary');
+      btnElement.classList.add('btn-primary', 'active');
+      renderProducts(category);
+    }
+
+    // --- QUICK VIEW MODAL ---
+    function openQuickView(productId) {
+      const p = productsData.find(item => item.id === productId);
+      if(!p) return;
+
+      const modalContent = document.getElementById('quickViewModalContent');
+      modalContent.innerHTML = `
+        <div class="row g-0">
+          <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-4">
+             <svg width="140" height="260" viewBox="0 0 100 200" fill="none">
+                <rect x="35" y="10" width="30" height="12" rx="3" fill="#334155"/>
+                <path d="M 30 22 L 25 45 L 75 45 L 70 22 Z" fill="${p.color}"/>
+                <rect x="22" y="45" width="56" height="140" rx="12" fill="${p.color}"/>
+                <path d="M 28 50 Q 30 110 28 175" stroke="rgba(255,255,255,0.3)" stroke-width="4"/>
+             </svg>
+          </div>
+          <div class="col-md-6 p-4 p-md-5 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge ${p.badgeBg}">${p.badge}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <h3 class="fw-bold mb-2">${p.name}</h3>
+              <h4 class="text-primary fw-bold mb-3">$${p.price.toFixed(2)}</h4>
+              <p class="text-muted small mb-4">${p.description}</p>
+              
+              <h6 class="fw-bold mb-2">Key Specifications:</h6>
+              <ul class="list-unstyled text-muted small mb-4">
+                ${p.specs.map(s => `<li class="mb-1"><i class="fa-solid fa-check text-primary me-2"></i>${s}</li>`).join('')}
+              </ul>
+            </div>
+            <button class="btn btn-primary btn-lg rounded-pill w-100" onclick="addToCart('${p.id}'); bootstrap.Modal.getInstance(document.getElementById('quickViewModal')).hide();">
+              Add To Cart <i class="fa-solid fa-bag-shopping ms-2"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      const qvModal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+      qvModal.show();
+    }
+
+    // --- SHOPPING CART LOGIC ---
+    function addToCart(productId) {
+      const existing = cart.find(item => item.id === productId);
+      if(existing) {
+        existing.qty += 1;
+      } else {
+        const p = productsData.find(item => item.id === productId);
+        cart.push({ ...p, qty: 1 });
+      }
+
+      updateCartUI();
+      showToast('Item successfully added to your shopping bag!');
+    }
+
+    function updateCartQty(productId, delta) {
+      const item = cart.find(i => i.id === productId);
+      if(item) {
+        item.qty += delta;
+        if(item.qty <= 0) {
+          cart = cart.filter(i => i.id !== productId);
+        }
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cartBadge = document.getElementById('cart-badge');
+      const cartBody = document.getElementById('cart-drawer-body');
+      const cartTotal = document.getElementById('cart-total-price');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      cartBadge.innerText = totalItems;
+
+      if(cart.length === 0) {
+        cartBody.innerHTML = `
+          <div class="text-center my-auto py-5">
+            <i class="fa-solid fa-basket-shopping text-muted fs-1 mb-3"></i>
+            <h5 class="fw-bold">Your Bag is Empty</h5>
+            <p class="text-muted small">Looks like you haven't added any bottles yet.</p>
+          </div>
+        `;
+        cartTotal.innerText = '$0.00';
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      checkoutBtn.disabled = false;
+      let totalAmount = 0;
+      cartBody.innerHTML = '';
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        totalAmount += itemTotal;
+
+        cartBody.innerHTML += `
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+            <div class="d-flex align-items-center gap-3">
+              <div class="cart-item-img d-flex align-items-center justify-content-center">
+                <svg width="30" height="40" viewBox="0 0 100 200" fill="none">
+                  <rect x="22" y="45" width="56" height="140" rx="12" fill="${item.color}"/>
+                </svg>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0 small">${item.name}</h6>
+                <small class="text-muted">$${item.price.toFixed(2)}</small>
+              </div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-sm btn-light border rounded-circle" onclick="updateCartQty('${item.id}', -1)" style="width:28px; height:28px; padding:0;">-</button>
+              <span class="fw-bold small">${item.qty}</span>
+              <button class="btn btn-sm btn-light border rounded-circle" onclick="updateCartQty('${item.id}', 1)" style="width:28px; height:28px; padding:0;">+</button>
+            </div>
+          </div>
+        `;
+      });
+
+      cartTotal.innerText = `$${totalAmount.toFixed(2)}`;
+    }
+
+    function triggerCheckout() {
+      const offcanvasEl = document.getElementById('cartDrawer');
+      const offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+      if (offcanvas) offcanvas.hide();
+
+      // Clear Cart
+      cart = [];
+      updateCartUI();
+
+      // Launch Confetti FX
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      const successModal = new bootstrap.Modal(document.getElementById('checkoutSuccessModal'));
+      successModal.show();
+    }
+
+    // --- ECO IMPACT CALCULATOR LOGIC ---
+    function calculateEcoImpact(val) {
+      document.getElementById('sliderValue').innerText = val;
+      
+      const bottlesPerYear = val * 52;
+      const moneySaved = (bottlesPerYear * 1.50).toFixed(0);
+      const co2Saved = (bottlesPerYear * 0.082).toFixed(1);
+
+      document.getElementById('statPlasticSaved').innerText = bottlesPerYear;
+      document.getElementById('statMoneySaved').innerText = `$${moneySaved}`;
+      document.getElementById('statCo2Saved').innerText = `${co2Saved} kg`;
+    }
+
+    // --- CONTACT FORM HANDLER ---
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      e.target.reset();
+      showToast('Thank you! Your message has been sent.');
+    }
+
+    // --- TOAST NOTIFICATION HELPERS ---
+    function showToast(msg) {
+      document.getElementById('toastMessage').innerHTML = `<i class="fa-solid fa-circle-check text-success"></i> ${msg}`;
+      const toastEl = document.getElementById('liveToast');
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    }
+
+    // --- CANVAS FLOATING BUBBLE PARTICLES BACKGROUND ---
+    function initParticles() {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = canvas.parentElement.offsetWidth;
+      let height = canvas.height = canvas.parentElement.offsetHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = canvas.parentElement.offsetWidth;
+        height = canvas.height = canvas.parentElement.offsetHeight;
+      });
+
+      const particles = Array.from({ length: 30 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 4 + 1,
+        speedY: Math.random() * 1 + 0.2,
+        opacity: Math.random() * 0.5 + 0.1
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        particles.forEach(p => {
+          p.y -= p.speedY;
+          if (p.y < 0) {
+            p.y = height;
+            p.x = Math.random() * width;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 166, 251, ${p.opacity})`;
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    // INITIALIZATION ON WINDOW LOAD
+    window.onload = function() {
+      renderProducts();
+      initParticles();
+      calculateEcoImpact(12);
+    };
+  </script>
+</body>
+</html>
